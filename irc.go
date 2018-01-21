@@ -426,7 +426,7 @@ func (irc *Connection) Connect(server string) error {
 	if len(irc.Server) == 0 {
 		return errors.New("empty 'server'")
 	}
-	if strings.Count(irc.Server, ":") != 1 {
+	if strings.Count(irc.Server, ":") != 1 && (strings.Index(irc.Server, "[") != 0 && strings.Count(irc.Server, "]:") != 1) {
 		return errors.New("wrong number of ':' in address")
 	}
 	if strings.Index(irc.Server, ":") == 0 {
@@ -436,8 +436,8 @@ func (irc *Connection) Connect(server string) error {
 		return errors.New("port missing")
 	}
 	// check for valid range
-	ports := strings.Split(irc.Server, ":")[1]
-	port, err := strconv.Atoi(ports)
+	ports := strings.Split(irc.Server, ":")
+	port, err := strconv.Atoi(ports[len(ports)-1])
 	if err != nil {
 		return errors.New("extracting port failed")
 	}
